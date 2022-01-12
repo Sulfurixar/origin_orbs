@@ -17,7 +17,11 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
+	// Oro-config
 	mavenCentral()
+
+	// MODMENU
+	maven { url "https://maven.terraformersmc.com/releases" } 
 }
 
 dependencies {
@@ -32,6 +36,9 @@ dependencies {
 	// Oro-config
 	modImplementation "com.oroarmor:oro-config-fabric:${project.oro_version}"
   	include "com.oroarmor:oro-config-fabric:${project.oro_version}"
+
+	// ModMenu
+	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 processResources {

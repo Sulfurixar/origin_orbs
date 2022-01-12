@@ -12,7 +12,7 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/origin_orbs/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -31,5 +31,12 @@
     "java": ">=17"
   },
   "suggests": {
+  },
+  "custom": {
+    "modmenu": {
+      "parent": {
+        "icon": "assets/origin_orbs/icon.png"
+      }
+    }
   }
 }
