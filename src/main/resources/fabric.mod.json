@@ -31,5 +31,12 @@
     "java": ">=17"
   },
   "suggests": {
+  },
+  "custom": {
+    "modmenu": {
+      "parent": {
+        "icon": "assets/origin_orbs/icon.png"
+      }
+    }
   }
 }
