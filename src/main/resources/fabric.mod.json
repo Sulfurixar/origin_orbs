@@ -1,16 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "origins_orbs",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Origin Orbs",
+  "description": "Zener's Origin Orbs edition.",
   "authors": [
-    "Me!"
+    "Zener"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
 
   "license": "CC0-1.0",
@@ -19,20 +17,19 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "com.zener.origin_orbs.OriginOrbs"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "origin_orbs.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.18.x",
+    "minecraft": "1.17.x",
     "java": ">=17"
   },
   "suggests": {
-    "another-mod": "*"
   }
 }

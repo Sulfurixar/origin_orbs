@@ -1,0 +1,47 @@
+{
+    "type": "origins:active_self",
+	"key": "key.use",
+    "entity_action": {
+        "type": "origins:and",
+        "actions": [
+			{
+			"type": "origins:execute_command",
+			"command": "/origin set @s origins:origin <origin>:<origin>",
+			"permission_level": 4
+			},
+			{
+			"type": "origins:execute_command",
+			"command": "/particle explosion_emitter",
+			"permission_level": 4
+			},
+            {
+            "type": "origins:execute_command",
+            "command": "/clear @s origin_orbs:orb 1",
+            "permission_level": 4
+            }
+        ]
+    },
+    "condition": {
+        "type": "origins:and",
+        "conditions": [
+		
+          {
+            "type": "origins:equipped_item",
+            "equipment_slot": "mainhand",
+            "item_condition":
+            {
+                "type": "origins:ingredient",
+                "ingredient":
+                {
+                    "item": "origin_orbs:orb"
+                }
+            }
+        }
+      ]
+    },
+    "cooldown": 20,
+    "hud_render": {
+        "should_render": false
+	},
+	"hidden": true
+}
