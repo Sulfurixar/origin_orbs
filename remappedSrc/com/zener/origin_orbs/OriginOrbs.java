@@ -11,7 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -33,6 +38,7 @@ public class OriginOrbs implements ModInitializer {
     
     public static final Identifier UPDATE_ORIGIN_ORBS_PACKET_ID = new Identifier(MOD_ID, "update_origin_orbs");
 
+    private static final IntSet hasModClientConnectionHashes = IntSets.synchronize(new IntAVLTreeSet());
 
     private static final Map<Item, Identifier> ITEMS = new HashMap<Item, Identifier>();
 
@@ -66,8 +72,29 @@ public class OriginOrbs implements ModInitializer {
             }
         });
 
+        ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
+			sender.sendPacket(PRESENCE_CHANNEL, new PacketByteBuf(Unpooled.buffer()));
+		});
+
+        ServerLoginConnectionEvents.DISCONNECT.register((handler, server) -> {
+			hasModClientConnectionHashes.remove(handler.getConnection().hashCode());
+		});
+
+        ServerLoginNetworking.registerGlobalReceiver(PRESENCE_CHANNEL, (server, handler, understood, buf, synchronizer, responseSender) -> {
+			if (understood) {
+				hasModClientConnectionHashes.add(handler.getConnection().hashCode());
+			}
+		});
+
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			OriginOrbs.logInfo("Syncing origin_orbs data to player2.");
+            if (hasModClientConnectionHashes.contains(handler.getConnection().hashCode())) {
+				((IServerPlayerEntity) handler.player).origin_orbs$setClientModPresent(true);
+				hasModClientConnectionHashes.remove(handler.getConnection().hashCode());
+			}
+        });
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			OriginOrbs.logInfo("Syncing origin_orbs data to player.");
 			PacketByteBuf buf = OriginOrbs.createAdvancedRecipeSyncPacket();
             sender.sendPacket(OriginOrbs.UPDATE_ORIGIN_ORBS_PACKET_ID, buf);
         });
@@ -85,6 +112,13 @@ public class OriginOrbs implements ModInitializer {
         });
         
 		return buf;
+	}
+
+    public static boolean hasClientMod(ServerPlayerEntity playerEntity) {
+		if (playerEntity instanceof IServerPlayerEntity) {
+			return ((IServerPlayerEntity) playerEntity).origin_orbs$hasClientMod();
+		}
+		return false;
 	}
 
     public static void logInfo(String message) {
